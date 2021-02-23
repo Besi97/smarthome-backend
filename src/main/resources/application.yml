@@ -1,0 +1,15 @@
+spring:
+  profiles:
+    active: @activatedProperties@
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://securetoken.google.com/smarthome-v2-304611
+          jwk-set-uri: https://www.googleapis.com/robot/v1/metadata/jwk/securetoken@system.gserviceaccount.com
+  cloud:
+    gcp:
+      project-id: smarthome-v2-304611
+server:
+  servlet:
+    context-path: /api/
