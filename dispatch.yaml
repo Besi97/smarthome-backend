@@ -1,0 +1,4 @@
+dispatch:
+  # route api requests
+  - url: "api.smarthome.besi.dev/*"
+    service: api

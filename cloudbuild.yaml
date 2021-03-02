@@ -1,8 +1,13 @@
 steps:
 
-  # Package and deploy with Maven
-  - name: 'gcr.io/cloud-builders/mvn'
+  - id: 'mvn package'
+    name: 'gcr.io/cloud-builders/mvn'
     args: ['package']
 
-  - name: 'gcr.io/cloud-builders/gcloud'
+  - id: 'deploy backend'
+    name: 'gcr.io/cloud-builders/gcloud'
     args: ['app', 'deploy']
+
+  - id: 'deploy dispatch.yaml'
+    name: "gcr.io/cloud-builders/gcloud"
+    args: [ 'app', 'deploy', '/workspace/dispatch.yaml' ]
