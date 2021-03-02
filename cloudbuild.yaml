@@ -1,5 +1,9 @@
 steps:
 
+  # Install gcloud app-engine-java component
+  - name: "gcr.io/cloud-builders/gcloud"
+    args: ['components', 'install', 'app-engine-java']
+
   # Package and deploy with Maven
   - name: 'gcr.io/cloud-builders/mvn'
     args: [ '-e', '-X', 'package', 'appengine:deploy']
