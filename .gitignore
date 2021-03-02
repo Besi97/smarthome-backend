@@ -31,3 +31,11 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### maven wrapper ###
+/.mvn/
+mvnw
+mvnw.cmd
+
+### other ###
+firebase-config.json
