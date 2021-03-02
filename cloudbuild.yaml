@@ -2,4 +2,4 @@ steps:
 
   # Package and deploy with Maven
   - name: 'gcr.io/cloud-builders/mvn'
-    args: [ 'package', 'appengine:deploy']
+    args: [ '-e', '-X', 'package', 'appengine:deploy']
