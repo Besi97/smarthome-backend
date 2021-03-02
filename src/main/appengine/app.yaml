@@ -1,0 +1,7 @@
+runtime: java11
+service: backend
+instance_class: F1
+secure: always
+automatic_scaling:
+  max_instances: 3
+  min_instances: 0
