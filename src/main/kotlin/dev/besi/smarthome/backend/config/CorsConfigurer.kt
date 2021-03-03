@@ -1,4 +1,4 @@
-package dev.besi.smarthome.backend.security
+package dev.besi.smarthome.backend.config
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
