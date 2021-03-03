@@ -1,4 +1,4 @@
 dispatch:
   # route api requests
-  - url: "api.smarthome.besi.dev/*"
+  - url: "smarthome.besi.dev/api/*"
     service: api
