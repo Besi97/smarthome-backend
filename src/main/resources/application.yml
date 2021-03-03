@@ -10,4 +10,4 @@ spring:
       project-id: smarthome-v2-304611
 server:
   servlet:
-    context-path: "/api/*"
+    context-path: "/api/"
