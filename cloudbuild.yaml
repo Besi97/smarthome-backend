@@ -1,8 +1,8 @@
 steps:
 
-  - id: 'mvn package'
-    name: 'gcr.io/cloud-builders/mvn'
-    args: ['-e', '-DskipTests', 'package', 'appengine:deploy']
+  - id: 'deploy backend'
+    name: 'gcr.io/cloud-builders/gcloud'
+    args: ['app', 'deploy']
 
   - id: 'deploy dispatch.yaml'
     name: "gcr.io/cloud-builders/gcloud"
