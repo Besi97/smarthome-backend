@@ -15,8 +15,8 @@ class AdminController {
     fun getTest() = "{\"text\": \"Test passed\"}"
 
     @GetMapping(path = ["{id}"])
-    fun setAdmin(@PathVariable id: String): String {
-        return FirebaseAuth.getInstance().getUser(id).email
+    fun setAdmin(@PathVariable id: String) {
+        return FirebaseAuth.getInstance().setCustomUserClaims(id, mapOf("scope" to arrayOf("SYS_ADMIN")))
     }
 
 }
