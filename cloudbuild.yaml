@@ -2,7 +2,7 @@ steps:
 
   - id: 'deploy backend'
     name: 'gcr.io/cloud-builders/gcloud'
-    args: ['app', 'deploy']
+    args: ['app', 'deploy', '--version=prod']
 
   - id: 'deploy dispatch.yaml'
     name: "gcr.io/cloud-builders/gcloud"
