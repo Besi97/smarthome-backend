@@ -33,9 +33,7 @@ build/
 .vscode/
 
 ### maven wrapper ###
-/.mvn/
-mvnw
-mvnw.cmd
+/.mvn/wrapper/maven-wrapper.jar
 
 ### other ###
 firebase-config.json
