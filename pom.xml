@@ -19,23 +19,6 @@
         <spring-cloud-gcp.version>2.0.0</spring-cloud-gcp.version>
         <spring-cloud.version>2020.0.1</spring-cloud.version>
     </properties>
-    <profiles>
-        <profile>
-            <id>dev</id>
-            <properties>
-                <activatedProperties>dev</activatedProperties>
-            </properties>
-        </profile>
-        <profile>
-            <id>prod</id>
-            <properties>
-                <activatedProperties>prod</activatedProperties>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-    </profiles>
     <dependencies>
         <dependency>
             <groupId>com.google.firebase</groupId>

@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    active: @activatedProperties@
   security:
     oauth2:
       resourceserver:

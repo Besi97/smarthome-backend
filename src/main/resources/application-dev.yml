@@ -1,7 +1,0 @@
-spring:
-  cloud:
-    gcp:
-      credentials:
-        location: file:C:\Users\Besi\IdeaProjects\smarthome-backend\src\main\resources\firebase-config.json
-cors:
-  origin: "http://localhost:4200"
