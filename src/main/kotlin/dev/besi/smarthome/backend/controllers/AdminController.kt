@@ -16,7 +16,7 @@ class AdminController {
 
     @GetMapping(path = ["{id}"])
     fun setAdmin(@PathVariable id: String) {
-        return FirebaseAuth.getInstance().setCustomUserClaims(id, mapOf("scope" to arrayOf("SYS_ADMIN")))
+        FirebaseAuth.getInstance().setCustomUserClaims(id, mapOf("scope" to arrayOf("SYS_ADMIN")))
     }
 
 }
