@@ -2,3 +2,11 @@ dispatch:
   # route api requests
   - url: "smarthome.besi.dev/api/*"
     service: api
+
+  # test api
+  - url: "test.smarthome.besi.dev/api/*"
+    service: test-api
+
+  # test frontend
+  - url: "test.smarthome.besi.dev/*"
+    service: test
