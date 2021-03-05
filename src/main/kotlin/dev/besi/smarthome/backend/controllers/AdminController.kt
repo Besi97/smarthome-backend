@@ -4,6 +4,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.access.annotation.Secured
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 class AdminController {
 
     @GetMapping(path = ["test"])
-    @Secured("SYS_ADMIN")
+    @PreAuthorize("hasAuthority('SYS_ADMIN')")
     fun getTest() = "{\"text\": \"Test passed\"}"
 
     @GetMapping(path = ["{id}"])
