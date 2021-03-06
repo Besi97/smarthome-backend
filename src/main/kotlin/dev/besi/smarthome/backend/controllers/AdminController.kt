@@ -5,10 +5,7 @@ import dev.besi.smarthome.backend.config.SecurityConst
 import dev.besi.smarthome.backend.model.FirebaseUserModel
 import dev.besi.smarthome.backend.model.FirebaseUserPageModel
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping(path = ["admin"])
@@ -23,5 +20,15 @@ class AdminController {
     @PreAuthorize("hasAnyAuthority('${SecurityConst.Scope.SYS_ADMIN}')")
     fun getUser(@PathVariable id: String): FirebaseUserModel =
             FirebaseUserModel(FirebaseAuth.getInstance().getUser(id))
+
+    @GetMapping(path = ["user/{id}/claims"])
+    @PreAuthorize("hasAnyAuthority('${SecurityConst.Scope.SYS_ADMIN}')")
+    fun getUserClaims(@PathVariable id: String): Map<String, Any> =
+            FirebaseAuth.getInstance().getUser(id).customClaims
+
+    @PostMapping(path = ["user/{id}/claims"])
+    @PreAuthorize("hasAnyAuthority('${SecurityConst.Scope.SYS_ADMIN}')")
+    fun postUserClaims(@PathVariable id: String, @RequestBody claims: Map<String, Any>) =
+            FirebaseAuth.getInstance().setCustomUserClaims(id, claims)
 
 }
