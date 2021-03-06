@@ -20,7 +20,7 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
 				.and().oauth2ResourceServer().jwt().jwtAuthenticationConverter(
 						JwtAuthenticationConverter().apply {
 							setJwtGrantedAuthoritiesConverter(JwtGrantedAuthoritiesConverter().apply {
-								setAuthoritiesClaimName("scope")
+								setAuthoritiesClaimName(SecurityConst.JWT_SCOPES_KEY)
 								setAuthorityPrefix("")
 							})
 						}
