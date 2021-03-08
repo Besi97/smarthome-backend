@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.*
 @PreAuthorize("hasAuthority('${SecurityConst.Scope.SYS_ADMIN}')")
 class UsersController {
 
-    @GetMapping
-    fun getUsers(): FirebaseUserPageModel =
-            FirebaseUserPageModel(FirebaseAuth.getInstance().listUsers(null))
+    @GetMapping(path = ["{token}"])
+    fun getUsers(@PathVariable(required = false) token: String?): FirebaseUserPageModel =
+            FirebaseUserPageModel(FirebaseAuth.getInstance().listUsers(token))
 
     @GetMapping(path = ["{id}"])
     fun getUser(@PathVariable id: String): FirebaseUserModel =
