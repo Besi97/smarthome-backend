@@ -6,6 +6,8 @@ import dev.besi.smarthome.backend.firestore.Device
 import dev.besi.smarthome.backend.firestore.FirestoreConstants.DEVICES_COLLECTION
 import dev.besi.smarthome.backend.model.DeviceModel
 import dev.besi.smarthome.backend.model.DevicesPageModel
+import dev.besi.smarthome.backend.services.DeviceService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
@@ -13,7 +15,9 @@ import org.springframework.web.server.ResponseStatusException
 @RestController
 @RequestMapping(path = ["admin/devices"])
 @PreAuthorize("hasAuthority('${SecurityConst.Scope.SYS_ADMIN}')")
-class DevicesController {
+class DevicesController(
+		@Autowired val deviceService: DeviceService
+) {
 
 	companion object {
 		private const val DEVICES_PAGE_SIZE = 100
@@ -33,8 +37,6 @@ class DevicesController {
 
 	@PostMapping
 	fun postDevice(@RequestBody deviceModel: DeviceModel): Device =
-		FirestoreClient.getFirestore().collection(DEVICES_COLLECTION).add(Device(deviceModel))
-				.get().get().get().toObject(Device::class.java)
-				?: Device()
+			deviceService.createDevice(deviceModel) ?: Device()
 
 }
