@@ -19,8 +19,8 @@ class DevicesController {
 		private const val DEVICES_PAGE_SIZE = 100
 	}
 
-	@GetMapping(path = ["{startAfterId}"])
-	fun getDevices(@PathVariable(required = false) startAfterId: String?): DevicesPageModel =
+	@GetMapping
+	fun getDevices(@RequestParam(required = false) startAfterId: String?): DevicesPageModel =
 			DevicesPageModel(
 					FirestoreClient.getFirestore().collection(DEVICES_COLLECTION).let {
 						(if (startAfterId == null) {
