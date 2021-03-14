@@ -5,6 +5,7 @@ import dev.besi.smarthome.backend.firestore.Household
 import dev.besi.smarthome.backend.model.HouseholdControllerPostAddDeviceToHousehold
 import dev.besi.smarthome.backend.model.HouseholdControllerPostHouseholdRequestModel
 import dev.besi.smarthome.backend.services.HouseholdService
+import dev.besi.smarthome.backend.services.UtilsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -42,7 +43,7 @@ class HouseholdController(
 			}
 
 	@PostMapping(
-			path = ["{householdId}/devices"],
+			path = ["{householdId: [" + UtilsService.ID_GENERATION_SOURCE_CHARSET + "]+}/devices"],
 			consumes = [MediaType.APPLICATION_JSON_VALUE],
 			produces = [MediaType.APPLICATION_JSON_VALUE]
 	)
