@@ -24,11 +24,11 @@ class HouseholdService(
 					5,
 					Household(name = name, userIds = listOf(userId)),
 					Household::class.java
-			).also { household ->
+			) { household, transaction ->
 				FirestoreClient.getFirestore().collection(USERS_COLLECTION).document(userId).let { userDoc ->
-					val user = userDoc.get().get().toObject(User::class.java)!!
+					val user = transaction.get(userDoc).get().toObject(User::class.java)!!
 					val updated = user.copy(householdIds = listOf(*user.householdIds!!.toTypedArray(), household.id!!))
-					userDoc.set(updated)
+					transaction.set(userDoc, updated)
 				}
 			}
 
