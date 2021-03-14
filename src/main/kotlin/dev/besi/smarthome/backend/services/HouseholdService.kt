@@ -5,7 +5,9 @@ import dev.besi.smarthome.backend.exception.*
 import dev.besi.smarthome.backend.firestore.Device
 import dev.besi.smarthome.backend.firestore.FirestoreConstants.DEVICES_COLLECTION
 import dev.besi.smarthome.backend.firestore.FirestoreConstants.HOUSEHOLDS_COLLECTION
+import dev.besi.smarthome.backend.firestore.FirestoreConstants.USERS_COLLECTION
 import dev.besi.smarthome.backend.firestore.Household
+import dev.besi.smarthome.backend.firestore.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -22,7 +24,13 @@ class HouseholdService(
 					5,
 					Household(name = name, userIds = listOf(userId)),
 					Household::class.java
-			)
+			).also { household ->
+				FirestoreClient.getFirestore().collection(USERS_COLLECTION).document(userId).let { userDoc ->
+					val user = userDoc.get().get().toObject(User::class.java)!!
+					val updated = user.copy(householdIds = listOf(*user.householdIds!!.toTypedArray(), household.id!!))
+					userDoc.set(updated)
+				}
+			}
 
 	@Throws(
 			FailedToLoadResourceException::class,
@@ -44,7 +52,7 @@ class HouseholdService(
 
 	private fun connectDeviceToHousehold(household: Household, device: Device): Boolean {
 		val updatedDevice = device.copy(householdId = household.id)
-		val updatedHousehold = household.copy(deviceIds = listOf(*household.deviceIds?.toTypedArray()!!, device.id!!))
+		val updatedHousehold = household.copy(deviceIds = listOf(*household.deviceIds!!.toTypedArray(), device.id!!))
 		FirestoreClient.getFirestore().let { firestore ->
 			val deviceDocument = firestore.collection(DEVICES_COLLECTION).document(device.id)
 			val householdDocument = firestore.collection(HOUSEHOLDS_COLLECTION).document(household.id!!)
