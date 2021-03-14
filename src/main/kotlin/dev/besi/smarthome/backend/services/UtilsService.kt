@@ -20,7 +20,7 @@ class UtilsService {
 				var id: String
 				do {
 					id = generateRandomId(idLength)
-				} while (collection.document(id).get().get().exists().not())
+				} while (collection.document(id).get().get().exists())
 				collection.document(id).let { document ->
 					document.set(content)
 					document.get().get().toObject(ofClass)
