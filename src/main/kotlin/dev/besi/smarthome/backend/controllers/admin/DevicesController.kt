@@ -20,22 +20,6 @@ class DevicesController(
 		@Autowired val deviceService: DeviceService
 ) {
 
-	companion object {
-		private const val DEVICES_PAGE_SIZE = 100
-	}
-
-	@GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
-	fun getDevices(@RequestParam(required = false) startAfterId: String?): DevicesPageModel =
-			DevicesPageModel(
-					FirestoreClient.getFirestore().collection(DEVICES_COLLECTION).let {
-						(if (startAfterId == null) {
-							it
-						} else {
-							it.startAfter(it.document(startAfterId).get().get())
-						}).limit(DEVICES_PAGE_SIZE).get().get().toObjects(Device::class.java)
-					}
-			)
-
 	@PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
 	fun postDevice(@RequestBody deviceModel: DeviceModel): Device =
 			deviceService.createDevice(deviceModel) ?: Device()
