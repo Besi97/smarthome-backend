@@ -28,7 +28,7 @@ class UtilsService {
 			idLength: Int,
 			content: T,
 			ofClass: Class<T>,
-			runInTransaction: (content: T, transaction: Transaction) -> Unit = { _, _ -> }
+			runInTransaction: (created: T, transaction: Transaction) -> Unit = { _, _ -> }
 	): T =
 			FirestoreClient.getFirestore().collection(collectionName).let { collection ->
 				var id: String
@@ -42,7 +42,7 @@ class UtilsService {
 				collection.document(id).let { document ->
 					FirestoreClient.getFirestore().runTransaction { transaction ->
 						transaction.set(document, content)
-						runInTransaction(content, transaction)
+						runInTransaction(transaction.get(document).get().toObject(ofClass)!!, transaction)
 					}.get()
 					document.get().get().toObject(ofClass)
 				}
