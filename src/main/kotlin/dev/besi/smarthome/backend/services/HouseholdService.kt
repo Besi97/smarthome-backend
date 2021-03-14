@@ -16,7 +16,7 @@ class HouseholdService(
 ) {
 
 	@Throws(FailedToFindSuitableIdException::class, FailedToCreateDocumentException::class)
-	fun createHousehold(name: String, userId: String): Household? =
+	fun createHousehold(name: String, userId: String): Household =
 			utilsService.createDocumentInCollectionWithContent(
 					HOUSEHOLDS_COLLECTION,
 					5,
