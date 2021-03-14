@@ -10,14 +10,14 @@ import org.springframework.stereotype.Service
 class UtilsService {
 
 	companion object {
+		const val ID_GENERATION_SOURCE_CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 		const val ID_GENERATION_MAX_ITERATION_COUNT = 15
 	}
 
 	fun generateRandomId(length: Int): String {
-		val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 		var id = ""
 		for (i in 0..length) {
-			id += chars.random()
+			id += ID_GENERATION_SOURCE_CHARSET.random()
 		}
 		return id
 	}
