@@ -1,5 +1,6 @@
 package dev.besi.smarthome.backend.services
 
+import com.google.firebase.cloud.FirestoreClient
 import dev.besi.smarthome.backend.exception.FailedToCreateDocumentException
 import dev.besi.smarthome.backend.exception.FailedToFindSuitableIdException
 import dev.besi.smarthome.backend.firestore.Device
@@ -21,5 +22,12 @@ class DeviceService(
 					Device(type = device.type),
 					Device::class.java
 			)
+
+	/**
+	 * @return null, if device can not be found by id
+	 */
+	fun getDevice(deviceId: String): Device? =
+			FirestoreClient.getFirestore().collection(DEVICES_COLLECTION).document(deviceId)
+					.get().get().toObject(Device::class.java)
 
 }
