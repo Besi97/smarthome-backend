@@ -1,6 +1,5 @@
 package dev.besi.smarthome.backend.services
 
-import com.google.firebase.cloud.FirestoreClient
 import dev.besi.smarthome.backend.firestore.Device
 import dev.besi.smarthome.backend.firestore.FirestoreConstants.DEVICES_COLLECTION
 import dev.besi.smarthome.backend.model.DeviceModel

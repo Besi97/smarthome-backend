@@ -1,17 +1,16 @@
 package dev.besi.smarthome.backend.controllers.admin
 
-import com.google.firebase.cloud.FirestoreClient
 import dev.besi.smarthome.backend.config.SecurityConst
 import dev.besi.smarthome.backend.firestore.Device
-import dev.besi.smarthome.backend.firestore.FirestoreConstants.DEVICES_COLLECTION
 import dev.besi.smarthome.backend.model.DeviceModel
-import dev.besi.smarthome.backend.model.DevicesPageModel
 import dev.besi.smarthome.backend.services.DeviceService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.*
-import org.springframework.web.server.ResponseStatusException
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping(path = ["admin/devices"])

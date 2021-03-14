@@ -1,7 +1,5 @@
 package dev.besi.smarthome.backend.services
 
-import com.google.cloud.firestore.DocumentReference
-import com.google.cloud.firestore.Firestore
 import com.google.firebase.cloud.FirestoreClient
 import org.springframework.stereotype.Service
 
@@ -17,7 +15,7 @@ class UtilsService {
 		return id
 	}
 
-	fun <T: Any> createDocumentInCollectionWithContent(collectionName: String, idLength: Int, content: T, ofClass: Class<T>): T? =
+	fun <T : Any> createDocumentInCollectionWithContent(collectionName: String, idLength: Int, content: T, ofClass: Class<T>): T? =
 			FirestoreClient.getFirestore().collection(collectionName).let { collection ->
 				var id: String
 				do {

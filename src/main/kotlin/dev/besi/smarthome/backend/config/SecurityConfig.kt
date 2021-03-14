@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter
 
 @Configuration
-class SecurityConfig: WebSecurityConfigurerAdapter() {
+class SecurityConfig : WebSecurityConfigurerAdapter() {
 	override fun configure(http: HttpSecurity?) {
 		http!!
 				.cors().and()
