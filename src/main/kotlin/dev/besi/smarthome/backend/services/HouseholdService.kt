@@ -1,6 +1,7 @@
 package dev.besi.smarthome.backend.services
 
 import com.google.firebase.cloud.FirestoreClient
+import dev.besi.smarthome.backend.exception.*
 import dev.besi.smarthome.backend.firestore.Device
 import dev.besi.smarthome.backend.firestore.FirestoreConstants.DEVICES_COLLECTION
 import dev.besi.smarthome.backend.firestore.FirestoreConstants.HOUSEHOLDS_COLLECTION
@@ -10,9 +11,11 @@ import org.springframework.stereotype.Service
 
 @Service
 class HouseholdService(
-		@Autowired val utilsService: UtilsService
+		@Autowired val utilsService: UtilsService,
+		@Autowired val deviceService: DeviceService
 ) {
 
+	@Throws(FailedToFindSuitableIdException::class, FailedToCreateDocumentException::class)
 	fun createHousehold(name: String, userId: String): Household? =
 			utilsService.createDocumentInCollectionWithContent(
 					HOUSEHOLDS_COLLECTION,
@@ -21,16 +24,22 @@ class HouseholdService(
 					Household::class.java
 			)
 
-	fun addDeviceToHousehold(householdId: String, deviceId: String, userId: String): Household? {
+	@Throws(
+			FailedToLoadResourceException::class,
+			UserDoesNotOwnHouseholdException::class,
+			DeviceAlreadyConnectedException::class
+	)
+	fun addDeviceToHousehold(householdId: String, deviceId: String, userId: String): Household {
 		val household = FirestoreClient.getFirestore().collection(HOUSEHOLDS_COLLECTION).document(householdId)
-				.get().get().toObject(Household::class.java) ?: return null
-		if (household.userIds == null || household.userIds.contains(userId).not()) return null
-		val device = FirestoreClient.getFirestore().collection(DEVICES_COLLECTION).document(deviceId)
-				.get().get().toObject(Device::class.java) ?: return null
-		if (device.householdId != null && device.householdId.isNotBlank()) return null
+				.get().get().toObject(Household::class.java) ?: throw FailedToLoadResourceException("household")
+		if (household.userIds == null || household.userIds.contains(userId).not())
+			throw UserDoesNotOwnHouseholdException()
+		val device = deviceService.getDevice(deviceId) ?: throw  FailedToLoadResourceException("device")
+		if (device.householdId != null && device.householdId.isNotBlank())
+			throw DeviceAlreadyConnectedException()
 		connectDeviceToHousehold(household, device)
 		return FirestoreClient.getFirestore().collection(HOUSEHOLDS_COLLECTION).document(householdId)
-				.get().get().toObject(Household::class.java)
+				.get().get().toObject(Household::class.java) ?: throw FailedToLoadResourceException("household")
 	}
 
 	private fun connectDeviceToHousehold(household: Household, device: Device): Boolean {
