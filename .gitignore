@@ -37,3 +37,5 @@ build/
 
 ### other ###
 firebase-config.json
+/.firebaserc
+/firebase.json

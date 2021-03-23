@@ -1,33 +1,25 @@
 package dev.besi.smarthome.backend.services
 
-import com.google.firebase.cloud.FirestoreClient
-import dev.besi.smarthome.backend.exception.FailedToCreateDocumentException
 import dev.besi.smarthome.backend.exception.FailedToFindSuitableIdException
-import dev.besi.smarthome.backend.firestore.Device
-import dev.besi.smarthome.backend.firestore.FirestoreConstants.DEVICES_COLLECTION
-import dev.besi.smarthome.backend.model.AdminDevicesControllerPostCreateDeviceRequestModel
+import dev.besi.smarthome.backend.repository.DeviceRepository
+import dev.besi.smarthome.backend.repository.entities.Device
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
 class DeviceService(
-		@Autowired val utilsService: UtilsService
+		@Autowired val utilsService: UtilsService,
+		@Autowired val deviceRepository: DeviceRepository
 ) {
 
-	@Throws(FailedToFindSuitableIdException::class, FailedToCreateDocumentException::class)
-	fun createDevice(device: AdminDevicesControllerPostCreateDeviceRequestModel): Device =
-			utilsService.createDocumentInCollectionWithContent(
-					DEVICES_COLLECTION,
-					6,
-					Device(type = device.type),
-					Device::class.java
-			)
+	@Throws(FailedToFindSuitableIdException::class)
+	fun createDeviceWithType(deviceType: Device.DeviceType): Device? =
+			utilsService.createDocumentWithContent(6, Device(type = deviceType), deviceRepository)
 
-	/**
-	 * @return null, if device can not be found by id
-	 */
-	fun getDevice(deviceId: String): Device? =
-			FirestoreClient.getFirestore().collection(DEVICES_COLLECTION).document(deviceId)
-					.get().get().toObject(Device::class.java)
+	fun updateDeviceName(id: String, name: String): Device? =
+			deviceRepository.findById(id).block()?.let { device ->
+				val updated = device.copy(name = name)
+				return deviceRepository.save(updated).block()
+			}
 
 }

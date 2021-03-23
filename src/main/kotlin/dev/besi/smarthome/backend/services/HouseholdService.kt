@@ -1,67 +1,45 @@
 package dev.besi.smarthome.backend.services
 
-import com.google.firebase.cloud.FirestoreClient
-import dev.besi.smarthome.backend.exception.*
-import dev.besi.smarthome.backend.firestore.Device
-import dev.besi.smarthome.backend.firestore.FirestoreConstants.DEVICES_COLLECTION
-import dev.besi.smarthome.backend.firestore.FirestoreConstants.HOUSEHOLDS_COLLECTION
-import dev.besi.smarthome.backend.firestore.FirestoreConstants.USERS_COLLECTION
-import dev.besi.smarthome.backend.firestore.Household
-import dev.besi.smarthome.backend.firestore.User
+import dev.besi.smarthome.backend.exception.FailedToCreateHouseholdException
+import dev.besi.smarthome.backend.exception.FailedToFindSuitableIdException
+import dev.besi.smarthome.backend.repository.HouseholdRepository
+import dev.besi.smarthome.backend.repository.UserRepository
+import dev.besi.smarthome.backend.repository.entities.Household
+import dev.besi.smarthome.backend.repository.entities.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class HouseholdService(
 		@Autowired val utilsService: UtilsService,
-		@Autowired val deviceService: DeviceService
+		@Autowired val householdRepository: HouseholdRepository,
+		@Autowired val userRepository: UserRepository,
+		@Autowired val userService: UserService
 ) {
 
-	@Throws(FailedToFindSuitableIdException::class, FailedToCreateDocumentException::class)
-	fun createHousehold(name: String, userId: String): Household =
-			utilsService.createDocumentInCollectionWithContent(
-					HOUSEHOLDS_COLLECTION,
-					5,
-					Household(name = name, userIds = listOf(userId)),
-					Household::class.java
-			) { household, transaction ->
-				FirestoreClient.getFirestore().collection(USERS_COLLECTION).document(userId).let { userDoc ->
-					val user = transaction.get(userDoc).get().toObject(User::class.java)!!
-					val updated = user.copy(householdIds = listOf(*user.householdIds!!.toTypedArray(), household.id!!))
-					transaction.set(userDoc, updated)
-				}
+	@Transactional
+	@Throws(FailedToFindSuitableIdException::class, FailedToCreateHouseholdException::class)
+	fun createHousehold(name: String, userId: String): Household? =
+			utilsService.createDocumentWithContent(
+					6, Household(name = name, userIds = listOf(userId)), householdRepository
+			)?.also { household ->
+				userRepository.findById(userId).block()
+						?.let { user ->
+							val updatedUser = user.copy(householdIds = listOf(*user.householdIds.toTypedArray(), household.id!!))
+							userRepository.save(updatedUser)
+						}
+						?: userService.createUserDocument(User(id = userId, householdIds = listOf(household.id!!)))
+						?: throw FailedToCreateHouseholdException()
 			}
 
-	@Throws(
-			FailedToLoadResourceException::class,
-			UserDoesNotOwnHouseholdException::class,
-			DeviceAlreadyConnectedException::class
-	)
-	fun addDeviceToHousehold(householdId: String, deviceId: String, userId: String): Household {
-		val household = FirestoreClient.getFirestore().collection(HOUSEHOLDS_COLLECTION).document(householdId)
-				.get().get().toObject(Household::class.java) ?: throw FailedToLoadResourceException("household")
-		if (household.userIds == null || household.userIds.contains(userId).not())
-			throw UserDoesNotOwnHouseholdException()
-		val device = deviceService.getDevice(deviceId) ?: throw  FailedToLoadResourceException("device")
-		if (device.householdId != null && device.householdId.isNotBlank())
-			throw DeviceAlreadyConnectedException()
-		connectDeviceToHousehold(household, device)
-		return FirestoreClient.getFirestore().collection(HOUSEHOLDS_COLLECTION).document(householdId)
-				.get().get().toObject(Household::class.java) ?: throw FailedToLoadResourceException("household")
-	}
+	fun updateHouseholdName(id: String, name: String): Household? =
+			householdRepository.findById(id).block()?.let { household ->
+				val updated = household.copy(name = name)
+				return householdRepository.save(updated).block()
+			}
 
-	private fun connectDeviceToHousehold(household: Household, device: Device): Boolean {
-		val updatedDevice = device.copy(householdId = household.id)
-		val updatedHousehold = household.copy(deviceIds = listOf(*household.deviceIds!!.toTypedArray(), device.id!!))
-		FirestoreClient.getFirestore().let { firestore ->
-			val deviceDocument = firestore.collection(DEVICES_COLLECTION).document(device.id)
-			val householdDocument = firestore.collection(HOUSEHOLDS_COLLECTION).document(household.id!!)
-			firestore.runTransaction { transaction ->
-				transaction.set(deviceDocument, updatedDevice)
-				transaction.set(householdDocument, updatedHousehold)
-			}.get()
-		}
-		return true
-	}
+	fun addDeviceToHousehold(deviceId: String, householdId: String, userId: String): Household? =
+			TODO()
 
 }

@@ -1,9 +1,8 @@
 package dev.besi.smarthome.backend.controllers.admin
 
 import dev.besi.smarthome.backend.config.SecurityConst
-import dev.besi.smarthome.backend.exception.FailedToCreateDocumentException
 import dev.besi.smarthome.backend.exception.FailedToFindSuitableIdException
-import dev.besi.smarthome.backend.firestore.Device
+import dev.besi.smarthome.backend.repository.entities.Device
 import dev.besi.smarthome.backend.model.AdminDevicesControllerPostCreateDeviceRequestModel
 import dev.besi.smarthome.backend.services.DeviceService
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,18 +23,13 @@ class DevicesController(
 ) {
 
 	@PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
-	fun postDevice(@RequestBody device: AdminDevicesControllerPostCreateDeviceRequestModel): Device =
+	fun postDevice(@RequestBody device: AdminDevicesControllerPostCreateDeviceRequestModel): Device? =
 			try {
-				deviceService.createDevice(device)
+				deviceService.createDeviceWithType(device.type)
 			} catch (e: FailedToFindSuitableIdException) {
 				throw ResponseStatusException(
 						HttpStatus.INTERNAL_SERVER_ERROR,
 						"Failed to create device: can not find suitable id"
-				)
-			} catch (e: FailedToCreateDocumentException) {
-				throw ResponseStatusException(
-						HttpStatus.INTERNAL_SERVER_ERROR,
-						"Failed to create device: could not create document"
 				)
 			}
 
