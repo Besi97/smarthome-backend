@@ -43,12 +43,12 @@ class UsersController {
 				throw ResponseStatusException(HttpStatus.NOT_FOUND)
 			}.customClaims
 
-	@PostMapping(
+	@PutMapping(
 			path = ["{id: [a-zA-Z0-9]{28}}/claims"],
 			consumes = [MediaType.APPLICATION_JSON_VALUE],
 			produces = [MediaType.APPLICATION_JSON_VALUE]
 	)
-	fun postUserClaims(@PathVariable id: String, @RequestBody claims: Map<String, Any>) =
+	fun putUserClaims(@PathVariable id: String, @RequestBody claims: Map<String, Any>) =
 			try {
 				FirebaseAuth.getInstance().setCustomUserClaims(id, claims)
 			} catch (e: IllegalArgumentException) {
