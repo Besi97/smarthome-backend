@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 
@@ -38,8 +40,9 @@ class DevicesController(
 	)
 	fun updateDeviceName(
 			@RequestBody deviceName: DevicesControllerPutUpdateDeviceNameRequestModel,
-			@PathVariable deviceId: String
+			@PathVariable deviceId: String,
+			@AuthenticationPrincipal jwt: Jwt
 	): Device? =
-			deviceService.updateDeviceName(deviceId, deviceName.name)
+			deviceService.updateDeviceName(jwt.subject, deviceId, deviceName.name)
 
 }
