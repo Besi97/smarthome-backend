@@ -1,4 +1,4 @@
-package dev.besi.smarthome.backend.controllers.admin
+package dev.besi.smarthome.backend.controllers
 
 import dev.besi.smarthome.backend.config.SecurityConst
 import dev.besi.smarthome.backend.exception.FailedToFindSuitableIdException
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
 
 @RestController
-@RequestMapping(path = ["admin/devices"])
+@RequestMapping(path = ["devices"])
 @PreAuthorize("hasAuthority('${SecurityConst.Scope.SYS_ADMIN}')")
 class DevicesController(
 		@Autowired val deviceService: DeviceService

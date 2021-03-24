@@ -1,4 +1,4 @@
-package dev.besi.smarthome.backend.controllers.admin
+package dev.besi.smarthome.backend.controllers
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.cloud.FirestoreClient
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 
 @RestController
-@RequestMapping(path = ["admin/users"])
+@RequestMapping(path = ["users"])
 @PreAuthorize("hasAuthority('${SecurityConst.Scope.SYS_ADMIN}')")
 class UsersController {
 
