@@ -1,7 +1,7 @@
 package dev.besi.smarthome.backend.repository.entities
 
 import com.google.cloud.firestore.annotation.DocumentId
-import org.springframework.cloud.gcp.data.firestore.Document
+import com.google.cloud.spring.data.firestore.Document
 
 @Document(collectionName = "users")
 data class User(

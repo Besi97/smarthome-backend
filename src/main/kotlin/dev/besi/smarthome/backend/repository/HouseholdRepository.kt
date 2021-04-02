@@ -1,6 +1,6 @@
 package dev.besi.smarthome.backend.repository
 
+import com.google.cloud.spring.data.firestore.FirestoreReactiveRepository
 import dev.besi.smarthome.backend.repository.entities.Household
-import org.springframework.cloud.gcp.data.firestore.FirestoreReactiveRepository
 
 interface HouseholdRepository : FirestoreReactiveRepository<Household>

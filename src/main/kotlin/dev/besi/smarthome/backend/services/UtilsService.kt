@@ -1,7 +1,7 @@
 package dev.besi.smarthome.backend.services
 
+import com.google.cloud.spring.data.firestore.FirestoreReactiveRepository
 import dev.besi.smarthome.backend.exception.FailedToFindSuitableIdException
-import org.springframework.cloud.gcp.data.firestore.FirestoreReactiveRepository
 import org.springframework.stereotype.Service
 
 @Service
