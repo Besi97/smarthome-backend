@@ -8,7 +8,6 @@ import dev.besi.smarthome.backend.repository.DeviceRepository
 import dev.besi.smarthome.backend.repository.HouseholdRepository
 import dev.besi.smarthome.backend.repository.UserRepository
 import dev.besi.smarthome.backend.repository.entities.Household
-import dev.besi.smarthome.backend.repository.entities.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -28,12 +27,11 @@ class HouseholdService(
 			utilsService.createDocumentWithContent(
 					6, Household(name = name, userIds = listOf(userId)), householdRepository
 			)?.also { household ->
-				userRepository.findById(userId).block()
+				userService.getUserDocument(userId)
 						?.let { user ->
 							val updatedUser = user.copy(householdIds = listOf(*user.householdIds.toTypedArray(), household.id!!))
 							userRepository.save(updatedUser)
 						}
-						?: userService.createUserDocument(User(id = userId, householdIds = listOf(household.id!!)))
 						?: throw FailedToCreateHouseholdException()
 			}
 

@@ -10,10 +10,11 @@ class UserService(
 		@Autowired val userRepository: UserRepository
 ) {
 
-	fun createDefaultUserDocument(id: String): User? =
+	private fun createDefaultUserDocument(id: String): User? =
 			userRepository.save(User(id)).block()
 
-	fun createUserDocument(content: User): User? =
-			userRepository.save(content).block()
+	fun getUserDocument(userId: String): User? =
+			userRepository.findById(userId).block()
+					?: createDefaultUserDocument(userId)
 
 }
