@@ -39,7 +39,7 @@ class HouseholdController(
 			}
 
 	@PutMapping(
-			path = ["{householdId: [a-zA-Z0-9]{28}}/name"],
+			path = ["{householdId: [a-zA-Z0-9]{6}}/name"],
 			consumes = [MediaType.APPLICATION_JSON_VALUE],
 			produces = [MediaType.APPLICATION_JSON_VALUE]
 	)
@@ -55,7 +55,7 @@ class HouseholdController(
 			}
 
 	@PutMapping(
-			path = ["{householdId: [a-zA-Z0-9]{28}}/devices"],
+			path = ["{householdId: [a-zA-Z0-9]{6}}/devices"],
 			consumes = [MediaType.APPLICATION_JSON_VALUE],
 			produces = [MediaType.APPLICATION_JSON_VALUE]
 	)
