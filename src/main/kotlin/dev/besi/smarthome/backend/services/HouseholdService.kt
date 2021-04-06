@@ -64,4 +64,22 @@ class HouseholdService(
 		return householdRepository.save(updatedHousehold).block()
 	}
 
+	@Transactional
+	@Throws(UserDoesNotOwnResourceException::class)
+	fun removeDeviceFromHousehold(deviceId: String, householdId: String, userId: String): Household? {
+		val device = deviceRepository.findById(deviceId).block() ?: return null
+		val household = householdRepository.findById(householdId).block() ?: return null
+		if (!household.userIds.contains(userId))
+			throw UserDoesNotOwnResourceException()
+		if (device.householdId != householdId)
+			return null
+
+		val updatedDevice = device.copy(householdId = null)
+		val updatedHousehold = household.copy(deviceIds = listOf(
+				*household.deviceIds.filterNot { it == deviceId }.toTypedArray()
+		))
+		deviceRepository.save(updatedDevice).block()
+		return householdRepository.save(updatedHousehold).block()
+	}
+
 }

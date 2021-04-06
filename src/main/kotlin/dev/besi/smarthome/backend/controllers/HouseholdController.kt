@@ -75,4 +75,16 @@ class HouseholdController(
 				)
 			}
 
+	@DeleteMapping(path = ["{householdId: [a-zA-Z0-9]{6}}/devices/{deviceId: [a-zA-Z0-9]{6}}"])
+	fun removeDeviceFromHousehold(
+			@PathVariable householdId: String,
+			@PathVariable deviceId: String,
+			@AuthenticationPrincipal jwt: Jwt
+	): Household? =
+			try {
+				householdService.removeDeviceFromHousehold(deviceId, householdId, jwt.subject)
+			} catch (e: UserDoesNotOwnResourceException) {
+				throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+			}
+
 }
