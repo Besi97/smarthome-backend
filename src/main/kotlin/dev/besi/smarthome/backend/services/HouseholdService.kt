@@ -1,9 +1,7 @@
 package dev.besi.smarthome.backend.services
 
-import dev.besi.smarthome.backend.exception.DeviceAlreadyConnectedException
-import dev.besi.smarthome.backend.exception.FailedToCreateHouseholdException
-import dev.besi.smarthome.backend.exception.FailedToFindSuitableIdException
-import dev.besi.smarthome.backend.exception.UserDoesNotOwnResourceException
+import com.google.firebase.auth.FirebaseAuth
+import dev.besi.smarthome.backend.exception.*
 import dev.besi.smarthome.backend.repository.DeviceRepository
 import dev.besi.smarthome.backend.repository.HouseholdRepository
 import dev.besi.smarthome.backend.repository.UserRepository
@@ -79,6 +77,22 @@ class HouseholdService(
 				*household.deviceIds.filterNot { it == deviceId }.toTypedArray()
 		))
 		deviceRepository.save(updatedDevice).block()
+		return householdRepository.save(updatedHousehold).block()
+	}
+
+	@Transactional
+	@Throws(UserDoesNotOwnResourceException::class, UserNotFoundException::class)
+	fun addUserToHousehold(householdId: String, userEmail: String, ownerUserId: String): Household? {
+		val household = householdRepository.findById(householdId).block() ?: return null
+		if (!household.userIds.contains(ownerUserId))
+			throw UserDoesNotOwnResourceException()
+		val user = FirebaseAuth.getInstance().getUserByEmail(userEmail).uid.let { userId ->
+			userRepository.findById(userId).block()
+		} ?: throw UserNotFoundException()
+
+		val updatedHousehold = household.copy(userIds = listOf(*household.userIds.toTypedArray(), user.id!!))
+		val updatedUser = user.copy(householdIds = listOf(*user.householdIds.toTypedArray(), householdId))
+		userRepository.save(updatedUser).block()
 		return householdRepository.save(updatedHousehold).block()
 	}
 

@@ -5,6 +5,7 @@ import dev.besi.smarthome.backend.repository.entities.Household
 import dev.besi.smarthome.backend.model.HouseholdControllerPostAddDeviceToHousehold
 import dev.besi.smarthome.backend.model.HouseholdControllerPostHouseholdRequestModel
 import dev.besi.smarthome.backend.model.HouseholdControllerPutUpdateHouseholdNameRequestModel
+import dev.besi.smarthome.backend.model.StringWrapper
 import dev.besi.smarthome.backend.services.HouseholdService
 import dev.besi.smarthome.backend.services.UtilsService
 import org.springframework.beans.factory.annotation.Autowired
@@ -85,6 +86,27 @@ class HouseholdController(
 				householdService.removeDeviceFromHousehold(deviceId, householdId, jwt.subject)
 			} catch (e: UserDoesNotOwnResourceException) {
 				throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+			}
+
+	@PutMapping(
+			path = ["{householdId: [a-zA-Z0-9]{6}}/users"],
+			consumes = [MediaType.APPLICATION_JSON_VALUE],
+			produces = [MediaType.APPLICATION_JSON_VALUE]
+	)
+	fun addUserToHousehold(
+			@PathVariable householdId: String,
+			@RequestBody userEmail: StringWrapper,
+			@AuthenticationPrincipal jwt: Jwt
+	): Household? =
+			try {
+				householdService.addUserToHousehold(householdId, userEmail.data, jwt.subject)
+			} catch (e: UserDoesNotOwnResourceException) {
+				throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+			} catch (e: UserNotFoundException) {
+				throw ResponseStatusException(
+						HttpStatus.BAD_REQUEST,
+						"Failed to find user with the provided email"
+				)
 			}
 
 }
