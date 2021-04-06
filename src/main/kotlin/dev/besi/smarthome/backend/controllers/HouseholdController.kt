@@ -76,7 +76,10 @@ class HouseholdController(
 				)
 			}
 
-	@DeleteMapping(path = ["{householdId: [a-zA-Z0-9]{6}}/devices/{deviceId: [a-zA-Z0-9]{6}}"])
+	@DeleteMapping(
+			path = ["{householdId: [a-zA-Z0-9]{6}}/devices/{deviceId: [a-zA-Z0-9]{6}}"],
+			produces = [MediaType.APPLICATION_JSON_VALUE]
+	)
 	fun removeDeviceFromHousehold(
 			@PathVariable householdId: String,
 			@PathVariable deviceId: String,
