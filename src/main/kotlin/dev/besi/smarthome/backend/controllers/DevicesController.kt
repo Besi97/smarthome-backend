@@ -4,7 +4,7 @@ import dev.besi.smarthome.backend.config.SecurityConst
 import dev.besi.smarthome.backend.exception.FailedToFindSuitableIdException
 import dev.besi.smarthome.backend.repository.entities.Device
 import dev.besi.smarthome.backend.model.DevicesControllerPostCreateDeviceRequestModel
-import dev.besi.smarthome.backend.model.DevicesControllerPutUpdateDeviceNameRequestModel
+import dev.besi.smarthome.backend.model.StringWrapper
 import dev.besi.smarthome.backend.services.DeviceService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -39,10 +39,10 @@ class DevicesController(
 			produces = [MediaType.APPLICATION_JSON_VALUE]
 	)
 	fun updateDeviceName(
-			@RequestBody deviceName: DevicesControllerPutUpdateDeviceNameRequestModel,
+			@RequestBody deviceName: StringWrapper,
 			@PathVariable deviceId: String,
 			@AuthenticationPrincipal jwt: Jwt
 	): Device? =
-			deviceService.updateDeviceName(jwt.subject, deviceId, deviceName.name)
+			deviceService.updateDeviceName(jwt.subject, deviceId, deviceName.data)
 
 }

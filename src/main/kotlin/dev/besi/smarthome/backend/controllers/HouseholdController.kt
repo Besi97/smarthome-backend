@@ -2,12 +2,8 @@ package dev.besi.smarthome.backend.controllers
 
 import dev.besi.smarthome.backend.exception.*
 import dev.besi.smarthome.backend.repository.entities.Household
-import dev.besi.smarthome.backend.model.HouseholdControllerPostAddDeviceToHousehold
-import dev.besi.smarthome.backend.model.HouseholdControllerPostHouseholdRequestModel
-import dev.besi.smarthome.backend.model.HouseholdControllerPutUpdateHouseholdNameRequestModel
 import dev.besi.smarthome.backend.model.StringWrapper
 import dev.besi.smarthome.backend.services.HouseholdService
-import dev.besi.smarthome.backend.services.UtilsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -27,11 +23,11 @@ class HouseholdController(
 			produces = [MediaType.APPLICATION_JSON_VALUE]
 	)
 	fun createHousehold(
-			@RequestBody householdModel: HouseholdControllerPostHouseholdRequestModel,
+			@RequestBody householdModel: StringWrapper,
 			@AuthenticationPrincipal jwt: Jwt
 	): Household? =
 			try {
-				householdService.createHousehold(householdModel.name, jwt.subject)
+				householdService.createHousehold(householdModel.data, jwt.subject)
 			} catch (e: FailedToFindSuitableIdException) {
 				throw ResponseStatusException(
 						HttpStatus.INTERNAL_SERVER_ERROR,
@@ -47,10 +43,10 @@ class HouseholdController(
 	fun updateHouseholdName(
 			@PathVariable householdId: String,
 			@AuthenticationPrincipal jwt: Jwt,
-			@RequestBody householdName: HouseholdControllerPutUpdateHouseholdNameRequestModel
+			@RequestBody householdName: StringWrapper
 	): Household? =
 			try {
-				householdService.updateHouseholdName(jwt.subject, householdId, householdName.name)
+				householdService.updateHouseholdName(jwt.subject, householdId, householdName.data)
 			} catch (e: UserDoesNotOwnResourceException) {
 				throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
 			}
@@ -62,11 +58,11 @@ class HouseholdController(
 	)
 	fun addDeviceToHousehold(
 			@PathVariable householdId: String,
-			@RequestBody deviceModel: HouseholdControllerPostAddDeviceToHousehold,
+			@RequestBody deviceModel: StringWrapper,
 			@AuthenticationPrincipal jwt: Jwt
 	): Household? =
 			try {
-				householdService.addDeviceToHousehold(deviceModel.deviceId, householdId, jwt.subject)
+				householdService.addDeviceToHousehold(deviceModel.data, householdId, jwt.subject)
 			} catch (e: UserDoesNotOwnResourceException) {
 				throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
 			}catch (e: DeviceAlreadyConnectedException) {
