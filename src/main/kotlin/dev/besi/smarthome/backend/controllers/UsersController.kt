@@ -48,9 +48,10 @@ class UsersController {
 			consumes = [MediaType.APPLICATION_JSON_VALUE],
 			produces = [MediaType.APPLICATION_JSON_VALUE]
 	)
-	fun putUserClaims(@PathVariable id: String, @RequestBody claims: Map<String, Any>) =
+	fun putUserClaims(@PathVariable id: String, @RequestBody claims: Map<String, Any>): Map<String, Any> =
 			try {
 				FirebaseAuth.getInstance().setCustomUserClaims(id, claims)
+				FirebaseAuth.getInstance().getUser(id).customClaims
 			} catch (e: IllegalArgumentException) {
 				throw ResponseStatusException(
 						HttpStatus.BAD_REQUEST,
